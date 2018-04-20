@@ -1,47 +1,37 @@
 package org.facosta.springsurbtcplots.HighChart_Integration.plotOptions;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class PlotOptions
 {
-    String color;
-    String upColor;
+    private Candlestick candlestick;
 
-    public PlotOptions(String color, String upColor)
+    public PlotOptions(Candlestick candlestick)
     {
-        this.color = color;
-        this.upColor = upColor;
+        this.candlestick = candlestick;
     }
 
     public PlotOptions()
     {
-        this("#f33f3f", "#5af127");
+        this(new Candlestick());
     }
 
-    public String getColor()
+    public Candlestick getCandlestick()
     {
-        return color;
+        return candlestick;
     }
 
-    public void setColor(String color)
+    public void setCandlestick(Candlestick candlestick)
     {
-        this.color = color;
-    }
-
-    public String getUpColor()
-    {
-        return upColor;
-    }
-
-    public void setUpColor(String upColor)
-    {
-        this.upColor = upColor;
+        this.candlestick = candlestick;
     }
 
     @Override
     public String toString()
     {
         return "PlotOptions{" +
-                "color='" + color + '\'' +
-                ", upColor='" + upColor + '\'' +
+                "candlestick=" + candlestick +
                 '}';
     }
 }

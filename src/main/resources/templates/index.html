@@ -2,10 +2,60 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>Index</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 </head>
 <body>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark justify-content-end">
+    <a href="#" class="btn btn-outline-primary">Sign in</a>
+</nav>
 
-<div id="plot"></div>
+<div class="container border rounded my-1">
+    <div id="plot">holap 2</div>
+</div>
+
+<div class="container  border-right border-left border-bottom rounded pt-1 mb-2 ">
+    <table class="table table-striped">
+        <thead class="thead-dark">
+        <tr>
+            <th scope="col">Indicador</th>
+            <th scope="col">Acción</th>
+            <th scope="col">Parámetros</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>rsi</td>
+            <td><a href="#" class="btn btn-success ">Editar</a></td>
+            <td>(1,4)</td>
+        </tr>
+        <tr>
+            <td>macd</td>
+            <td><a href="#" class="btn btn-success">Editar</a></td>
+            <td>(10, 12, 14)</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script src="https://code.highcharts.com/stock/highstock.js"></script>
+<script src="https://code.highcharts.com/stock/modules/drag-panes.js"></script>
+<script src="https://code.highcharts.com/stock/indicators/indicators.js"></script>
+<script src="https://code.highcharts.com/stock/indicators/ema.js"></script>
+<script src="https://code.highcharts.com/stock/indicators/bollinger-bands.js"></script>
+<script src="https://code.highcharts.com/stock/indicators/macd.js"></script>
+<script src="https://code.highcharts.com/stock/indicators/pivot-points.js"></script>
+<script src="https://code.highcharts.com/stock/indicators/rsi.js"></script>
+<script src="https://code.highcharts.com/stock/indicators/stochastic.js"></script>
+<script>
+    $(document).ready(function () {
+        $.get("/highchart", function (data) {
+            Highcharts.stockChart('plot', data)
+        })
+    })
+</script>
 </body>
 </html>

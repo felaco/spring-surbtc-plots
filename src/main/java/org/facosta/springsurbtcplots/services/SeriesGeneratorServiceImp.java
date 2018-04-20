@@ -1,11 +1,15 @@
 package org.facosta.springsurbtcplots.services;
 
 import org.facosta.springsurbtcplots.HighChart_Integration.ChartConfig;
+import org.facosta.springsurbtcplots.HighChart_Integration.serie.HighchartData;
 import org.facosta.springsurbtcplots.HighChart_Integration.serie.Serie;
 import org.facosta.springsurbtcplots.services.Interfaces.GetRequestHandlerService;
 import org.facosta.springsurbtcplots.services.Interfaces.SeriesGeneratorService;
+import org.facosta.springsurbtcplots.utils.DataJsonParse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class SeriesGeneratorServiceImp implements SeriesGeneratorService
@@ -22,7 +26,10 @@ public class SeriesGeneratorServiceImp implements SeriesGeneratorService
     public Serie generateGenericSeries(String groupBy)
     {
         Serie serie = new Serie("candlestick");
-        serie.setData(requester.getHttpRequest(groupBy));
+        List<HighchartData> data = DataJsonParse.toHighChartData(requester.getHttpRequest(groupBy));
+        serie.setData(data);
+        serie.setName("Precio Bitcoin");
+        serie.setId("Bitcoin");
         return serie;
     }
 

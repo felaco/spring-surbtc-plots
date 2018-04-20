@@ -1,6 +1,7 @@
 package org.facosta.springsurbtcplots.controllers;
 
 import org.facosta.springsurbtcplots.HighChart_Integration.ChartConfig;
+import org.facosta.springsurbtcplots.HighChart_Integration.serie.IndicatorParam;
 import org.facosta.springsurbtcplots.HighChart_Integration.serie.Serie;
 import org.facosta.springsurbtcplots.services.Interfaces.SeriesGeneratorService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +28,14 @@ public class HighChartController
         ChartConfig chartConfig = new ChartConfig();
         List<Serie> series = new ArrayList<>();
         series.add(seriesGeneratorService.generateGenericSeries("1D"));
+        Serie ema20 = new Serie.Builder().linkedTo("Bitcoin")
+                                         .name("Ema20")
+                                         .type("ema")
+                                         .params(new IndicatorParam(20))
+                                         .build();
+
+        series.add(ema20);
+
         chartConfig.setSeries(series);
 
         return chartConfig;

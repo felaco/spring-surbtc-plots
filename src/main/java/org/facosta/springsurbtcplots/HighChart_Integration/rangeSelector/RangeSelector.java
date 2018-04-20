@@ -22,11 +22,11 @@ public class RangeSelector
 
     public RangeSelector()
     {
-        selected = 0;
-        buttons.add(new Button(Type.DAY));
-        buttons.add(new Button(Type.DAY, 7));
-        buttons.add(new Button(Type.MONTH));
-        buttons.add(new Button(Type.YEAR));
+        selected = 1;
+        buttons.add(new Button(Type.DAY, 1, "1D"));
+        buttons.add(new Button(Type.DAY, 7, "7D"));
+        buttons.add(new Button(Type.MONTH, 1, "1M"));
+        buttons.add(new Button(Type.YEAR, 1, "1Y"));
     }
 
     public int getSelected()

@@ -1,9 +1,9 @@
 package org.facosta.springsurbtcplots.HighChart_Integration;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import org.facosta.springsurbtcplots.HighChart_Integration.plotOptions.PlotOptions;
 import org.facosta.springsurbtcplots.HighChart_Integration.rangeSelector.RangeSelector;
 import org.facosta.springsurbtcplots.HighChart_Integration.serie.Serie;
+import org.facosta.springsurbtcplots.HighChart_Integration.yaxis.YAxis;
 
 import java.util.List;
 
@@ -11,12 +11,14 @@ public class ChartConfig
 {
     private PlotOptions plotOptions;
     private RangeSelector rangeSelector;
+    private YAxis yAxis;
     private List<Serie> series;
 
     public ChartConfig()
     {
         plotOptions = new PlotOptions();
         rangeSelector = new RangeSelector();
+        yAxis = new YAxis();
     }
 
     public PlotOptions getPlotOptions()
@@ -47,5 +49,15 @@ public class ChartConfig
     public void setSeries(List<Serie> series)
     {
         this.series = series;
+    }
+
+    public YAxis getyAxis()
+    {
+        return yAxis;
+    }
+
+    public void setyAxis(YAxis yAxis)
+    {
+        this.yAxis = yAxis;
     }
 }

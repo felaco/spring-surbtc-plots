@@ -2,13 +2,13 @@ package org.facosta.springsurbtcplots.HighChart_Integration.rangeSelector;
 
 public class Button
 {
-    private Type type;
+    private String type;
     private int count;
     private String text;
 
     public Button(Type type, int count, String text)
     {
-        this.type = type;
+        this.type = type.getTypeStr();
         this.count = count;
         this.text = text;
     }
@@ -23,14 +23,14 @@ public class Button
         this(type, 1, type.toString());
     }
 
-    public Type getType()
+    public String getType()
     {
         return type;
     }
 
     public void setType(Type type)
     {
-        this.type = type;
+        this.type = type.getTypeStr();
     }
 
     public int getCount()

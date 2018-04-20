@@ -13,6 +13,6 @@ public enum Type
 
     public String getTypeStr()
     {
-        return typeStr;
+        return typeStr.toLowerCase();
     }
 }
