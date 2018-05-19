@@ -8,13 +8,13 @@ import java.util.List;
 public class IndicatorParam
 {
     private Integer period = null; //rsi, ema, macd, bollinger Bands
-    private Integer index = null; // macd
+    private Integer index = null; // all
     private Integer longPeriod = null; // macd
     private Integer shortPeriod = null; // macd
     private Integer signalPeriod = null; // macd
     private Float standardDeviation = null; // Bollinger Bands
-    private String algorithm = null; // Pivot points
-    private List<Integer> periods = null; // sctochastic oscilator
+    // private String algorithm = null; // Pivot points
+    //private List<Integer> periods = null; // sctochastic oscilator
 
     public IndicatorParam()
     {
@@ -33,8 +33,6 @@ public class IndicatorParam
         setShortPeriod(builder.shortPeriod);
         setSignalPeriod(builder.signalPeriod);
         setStandardDeviation(builder.standardDeviation);
-        setAlgorithm(builder.algorithm);
-        setPeriods(builder.periods);
     }
 
     public Integer getPeriod()
@@ -97,25 +95,7 @@ public class IndicatorParam
         this.standardDeviation = standardDeviation;
     }
 
-    public String getAlgorithm()
-    {
-        return algorithm;
-    }
 
-    public void setAlgorithm(String algorithm)
-    {
-        this.algorithm = algorithm;
-    }
-
-    public List<Integer> getPeriods()
-    {
-        return periods;
-    }
-
-    public void setPeriods(List<Integer> periods)
-    {
-        this.periods = periods;
-    }
 
 
     public static final class Builder
@@ -126,8 +106,6 @@ public class IndicatorParam
         private Integer shortPeriod;
         private Integer signalPeriod;
         private Float standardDeviation;
-        private String algorithm;
-        private List<Integer> periods;
 
         public Builder()
         {
@@ -166,18 +144,6 @@ public class IndicatorParam
         public Builder standardDeviation(Float val)
         {
             standardDeviation = val;
-            return this;
-        }
-
-        public Builder algorithm(String val)
-        {
-            algorithm = val;
-            return this;
-        }
-
-        public Builder periods(List<Integer> val)
-        {
-            periods = val;
             return this;
         }
 

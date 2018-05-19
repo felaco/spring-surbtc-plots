@@ -1,61 +1,132 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>Index</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
           integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" th:href="@{/css/main.css}"/>
 </head>
 <body>
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark justify-content-end">
-    <a href="#" class="btn btn-outline-primary">Sign in</a>
-</nav>
+<nav th:replace="layout/layout :: navbar"></nav>
 
 <div class="container border rounded my-1">
-    <div id="plot">holap 2</div>
+    <div id="plot"></div>
 </div>
 
-<div class="container  border-right border-left border-bottom rounded pt-1 mb-2 ">
-    <table class="table table-striped">
-        <thead class="thead-dark">
-        <tr>
-            <th scope="col">Indicador</th>
-            <th scope="col">Acción</th>
-            <th scope="col">Parámetros</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr>
-            <td>rsi</td>
-            <td><a href="#" class="btn btn-success ">Editar</a></td>
-            <td>(1,4)</td>
-        </tr>
-        <tr>
-            <td>macd</td>
-            <td><a href="#" class="btn btn-success">Editar</a></td>
-            <td>(10, 12, 14)</td>
-        </tr>
-        </tbody>
-    </table>
+<div class="container card" style="padding: 0" sec:authorize="isAuthenticated()">
+    <div class="card-header">Technical Analysis Indicators</div>
+    <div class="card-body">
+        <button class="btn btn-primary mb-4" data-toggle="modal"
+                data-target="#modal-indicator">Add new Indicator
+        </button>
+
+        <div id="modal-indicator" class="modal fade" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Add new Indicator</h4>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <label for="indicators">Select a indicator</label>
+                        <select name="indicators" id="indicators" class="form-control">
+                            <option th:each="indicator : ${indicators}" th:value="${indicator.indicatorName}"
+                                    th:text="${indicator.indicatorName}"></option>
+                        </select>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-primary" onclick="onAcceptModalIndicator()">Ok</button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <table class="table table-striped" id="indicators_table">
+            <thead class="thead-dark">
+            <tr>
+                <th scope="col">Indicador</th>
+                <th scope="col">Acción</th>
+                <th scope="col">Parámetros</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="indicator, iterStats : ${user.indicatorCommandList}">
+                <td th:text="${indicator.indicatorName}"></td>
+                <td>
+                    <a class="btn btn-success" th:id="'ed_' + ${iterStats.index}"
+                            th:href="@{|/indicators/${user.userName}/${iterStats.index}|}">Editar
+                    </a>
+                    <button class="btn btn-danger" th:id="'rm_' + ${iterStats.index}">Remover</button>
+                </td>
+                <td th:text="${indicator.paramToString()}"></td>
+            </tr>
+            </tbody>
+        </table>
+
+    </div>
 </div>
+
 
 <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>
 <script src="https://code.highcharts.com/stock/highstock.js"></script>
-<script src="https://code.highcharts.com/stock/modules/drag-panes.js"></script>
+<script async src="https://code.highcharts.com/stock/modules/drag-panes.js"></script>
 <script src="https://code.highcharts.com/stock/indicators/indicators.js"></script>
-<script src="https://code.highcharts.com/stock/indicators/ema.js"></script>
-<script src="https://code.highcharts.com/stock/indicators/bollinger-bands.js"></script>
-<script src="https://code.highcharts.com/stock/indicators/macd.js"></script>
-<script src="https://code.highcharts.com/stock/indicators/pivot-points.js"></script>
-<script src="https://code.highcharts.com/stock/indicators/rsi.js"></script>
-<script src="https://code.highcharts.com/stock/indicators/stochastic.js"></script>
+<script async src="https://code.highcharts.com/stock/indicators/ema.js"></script>
+<script async src="https://code.highcharts.com/stock/indicators/bollinger-bands.js"></script>
+<script async src="https://code.highcharts.com/stock/indicators/macd.js"></script>
+<script async src="https://code.highcharts.com/stock/indicators/pivot-points.js"></script>
+<script async src="https://code.highcharts.com/stock/indicators/rsi.js"></script>
+<script async src="https://code.highcharts.com/stock/indicators/stochastic.js"></script>
 <script>
+
+    var currentSelectedModalEdit = -1,
+        currentLoggedUser = null;
+
+    function insertNewIndicatorRowCallback(result) {
+        var td0 = '<td>' + result.indicatorName + '</td>',
+            td1 = '<td>' +
+                '<button class="btn btn-success" id="ed_' + result.lastIndicatorIndex + '">Editar</button>' +
+                '&nbsp' + // a space between the buttons
+                '<button class="btn btn-danger" id="rm_' + result.lastIndicatorIndex + '">Remover</button>' +
+                '</td>',
+            td2 = '<td>' + result.StringParams + '</td>';
+
+
+        $('#indicators_table > tbody:last-child')
+            .append($('<tr>')
+                .append(td0, td1, td2));
+
+    }
+
     $(document).ready(function () {
-        $.get("/highchart", function (data) {
+        $.get("/api/highchart", function (data) {
             Highcharts.stockChart('plot', data)
-        })
-    })
+        });
+
+        $.get("/api/loggedUser", function (data) {
+            currentLoggedUser = data.username;
+        });
+    });
+
+    function onAcceptModalIndicator() {
+        $('#modal-indicator').modal('hide');
+        indicator = document.getElementById("indicators");
+
+        $.ajax({
+            url: '/api/indicators',
+            type: 'POST',
+            data: ({paramName: indicator.value}),
+            success: insertNewIndicatorRowCallback
+        });
+        indicator.selectedIndex = "0";
+    }
+
 </script>
 </body>
 </html>

@@ -1,0 +1,61 @@
+.background-gradient {
+    position: fixed;
+    top: 0;
+    height: 100%;
+    width: 100%;
+    background: linear-gradient(140deg, #a2b6c9 0%, #6f9cd1 55%, #085392 95%)
+}
+
+.login-box {
+    max-width: 500px;
+    margin-top: 30px;
+    margin-left: auto;
+    margin-right: auto;
+    border-radius: 25px;
+    background: rgba(254, 254, 254, 0.85);
+    overflow: auto;
+}
+
+.login-top {
+    background: #162a33;
+    width: 100%;
+    padding-top: 50px;
+    padding-bottom: 40px;
+    text-align: center;
+}
+
+.login-top-span {
+    font-size: 30px;
+    color: white;
+}
+
+.form-element {
+    margin: 0 auto 1rem auto;
+    max-width: 400px;
+}
+
+.submit-button {
+    padding: 10px 20px 20px 20px;
+}
+
+.select-style {
+    border: 1px solid #ccc;
+    width: 120px;
+    border-radius: 3px;
+    overflow: hidden;
+    background: #fafafa url("img/icon-select.png") no-repeat 90% 50%;
+}
+
+.select-style select {
+    padding: 5px 8px;
+    width: 130%;
+    border: none;
+    box-shadow: none;
+    background: transparent;
+    background-image: none;
+    -webkit-appearance: none;
+}
+
+.select-style select:focus {
+    outline: none;
+}

@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 public class PlotOptions
 {
     private Candlestick candlestick;
+    private OptionSerie series = new OptionSerie();
 
     public PlotOptions(Candlestick candlestick)
     {
@@ -27,11 +28,22 @@ public class PlotOptions
         this.candlestick = candlestick;
     }
 
+    public OptionSerie getSeries()
+    {
+        return series;
+    }
+
+    public void setSeries(OptionSerie serie)
+    {
+        this.series = serie;
+    }
+
     @Override
     public String toString()
     {
         return "PlotOptions{" +
                 "candlestick=" + candlestick +
+                ", series=" + series +
                 '}';
     }
 }
