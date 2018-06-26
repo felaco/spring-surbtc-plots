@@ -1,28 +1,16 @@
 package org.facosta.springsurbtcplots.models.entity;
 
-import lombok.*;
+import lombok.Data;
 
-import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import java.util.Collection;
-import java.util.HashSet;
+import java.io.Serializable;
 
 
 @Data
-@EqualsAndHashCode(exclude = {"userModels"})
-@ToString(exclude = "userModels")
-@Entity
-public class Role
+public class Role implements Serializable
 {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
-
     @NotNull
     private String name;
-
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "roles")
-    private Collection<UserModel> userModels = new HashSet<>();
 
     public Role()
     {

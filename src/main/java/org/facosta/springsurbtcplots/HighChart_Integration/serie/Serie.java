@@ -16,6 +16,8 @@ public class Serie
     private List<HighchartData> data;
     private Marker marker = null;
 
+
+
     public Serie(String type, String name)
     {
         marker = new Marker(false);

@@ -1,37 +1,35 @@
 package org.facosta.springsurbtcplots.models.entity;
 
-import lombok.*;
+import lombok.Data;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.DBRef;
+import org.springframework.data.mongodb.core.mapping.Document;
 
-import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 
 @Data
-@Entity
-public class UserModel
+@Document
+public class UserModel implements Serializable
 {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private long id;
+    private String id;
 
     @NotNull
-    @Column(length = 30, unique = true)
     private String username;
 
     @NotNull
-    @Column(length = 60)
     private String password;
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinTable(joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
-        inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
+    @DBRef(lazy = false)
+    private List<UserIndicator> userIndicators = new ArrayList<>();
+
     private Collection<Role> roles = new HashSet<>();
 
-    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
-    private List<IndicatorWrapper> indicatorWrappers = new ArrayList<>();
 
     public UserModel()
     {

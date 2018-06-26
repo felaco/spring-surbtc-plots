@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Sign up</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous"/>
+    <link rel="stylesheet" th:href="@{/css/login.css}" />
+</head>
+<body>
+<div class="background-gradient">
+    <div class="login-box">
+        <div class="login-top">
+            <span class="login-top-span">Sign up</span>
+        </div>
+        <form th:action="@{/register}" method="post" class="form-padding" th:object="${user}">
+            <div class="form-element" style="padding-top: 30px">
+                <label for="username">Username</label>
+                <input type="text" name="username" id="username" class="form-control"
+                       placeholder="username" autofocus required th:field="*{username}"
+                       th:classappend="${#fields.hasErrors('username')} ? 'is-invalid'"
+                th:value="*{username}">
+                <p th:if="${#fields.hasErrors()}" th:errors="*{username}"
+                     class="invalid-feedback"></p>
+            </div>
+
+            <div class="form-element">
+                <label for="password">Password</label>
+                <input type="password" name="password" id="password"
+                       class="form-control" placeholder="Password" required th:field="*{password}"
+                       th:classappend="${#fields.hasErrors('password') or passwordMatchError!=null} ? 'is-invalid'"/>
+                <p th:if="${#fields.hasErrors('password')}" th:errors="*{password}"
+                     class="invalid-feedback"></p>
+                <p th:if="${passwordMatchError != null}" th:text="${passwordMatchError}"
+                     class="invalid-feedback"></p>
+            </div>
+            <div class="form-element">
+                <label for="passwordConfirm">Confirm password</label>
+                <input type="password" name="Confirm password" id="passwordConfirm"
+                       class="form-control" placeholder="Password" required th:field="*{passwordMatch}"
+                       th:classappend="${passwordMatchError!=null} ? 'is-invalid'"/>
+                <p th:if="${#fields.hasErrors('passwordMatch')}" th:errors="*{passwordMatch}"
+                     class="invalid-feedback"></p>
+            </div>
+
+            <div class="submit-button form-element">
+                <button type="submit" class="btn btn-primary btn-block">Submit</button>
+            </div>
+        </form>
+    </div>
+</div>
+</body>
+</html>

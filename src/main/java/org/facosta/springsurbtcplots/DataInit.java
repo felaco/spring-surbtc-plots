@@ -1,9 +1,10 @@
 package org.facosta.springsurbtcplots;
 
-import org.facosta.springsurbtcplots.models.entity.Indicator;
 import org.facosta.springsurbtcplots.models.entity.Role;
+import org.facosta.springsurbtcplots.models.entity.SupportedIndicators;
 import org.facosta.springsurbtcplots.models.entity.UserModel;
-import org.facosta.springsurbtcplots.repository.IndicatorRepository;
+import org.facosta.springsurbtcplots.repository.SupportedIndicatorsRepository;
+import org.facosta.springsurbtcplots.repository.UserIndicatorRepository;
 import org.facosta.springsurbtcplots.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -11,7 +12,6 @@ import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -21,39 +21,62 @@ import java.util.List;
 public class DataInit
 {
     private UserRepository userRepository;
-    private IndicatorRepository indicatorRepository;
+    private SupportedIndicatorsRepository supportedIndicatorsRepository;
+    private UserIndicatorRepository userIndicatorRepository;
     private PasswordEncoder passwordEncoder;
     private boolean generate_data;
+    private boolean delete_data;
+
 
     @Autowired
     public DataInit(UserRepository userRepository, PasswordEncoder passwordEncoder,
-                    IndicatorRepository indicatorRepository,
-                    @Value("${spring.jpa.hibernate.ddl-auto}") String generate_ddl)
+                    SupportedIndicatorsRepository indicatorRepository,
+                    UserIndicatorRepository userIndicatorRepository,
+                    @Value("${mongodb.init-strategy}") String generate_ddl)
     {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
-        this.indicatorRepository = indicatorRepository;
+        this.supportedIndicatorsRepository = indicatorRepository;
+        this.userIndicatorRepository = userIndicatorRepository;
 
-        String[] create_if = new String[]{"create", "create-drop"};
+        String[] create_if = new String[]{"create", "delete-create"};
         this.generate_data = Arrays.asList(create_if).contains(generate_ddl);
+        this.delete_data = generate_ddl.equals("delete-create");
     }
 
     @EventListener(ApplicationReadyEvent.class)
-    @Transactional
     public void run() throws Exception
     {
-        if(generate_data)
+        if (delete_data)
         {
-            List<Indicator> indicatorList = new ArrayList<>();
-            indicatorList.add(new Indicator("rsi", 1));
-            indicatorList.add(new Indicator("ema", 1));
-            indicatorList.add(new Indicator("macd", 4));
-            indicatorList.add(new Indicator("bollingerBand", 2));
-            indicatorRepository.saveAll(indicatorList);
+            userRepository.deleteAll();
+            supportedIndicatorsRepository.deleteAll();
+            userIndicatorRepository.deleteAll();
+        }
+        if (generate_data)
+        {
+            List<SupportedIndicators> supportedIndicatorsList;
+            SupportedIndicators ema, rsi, macd, bollinger;
+            ema = new SupportedIndicators("ema",
+                                          new String[]{"period"});
+
+            rsi = new SupportedIndicators("rsi",
+                                          new String[]{"period"});
+
+            macd = new SupportedIndicators("macd",
+                                           new String[]{"period", "longPeriod",
+                                                   "shortPeriod", "signalPeriod"});
+
+            bollinger = new SupportedIndicators("BollingerBand",
+                                                new String[]{"period", "standardDeviation"});
+
+            supportedIndicatorsList = new ArrayList<>(Arrays.asList(ema, rsi, macd, bollinger));
+            supportedIndicatorsRepository.saveAll(supportedIndicatorsList);
 
             /* =========== Admin user registration ==================*/
             Role admin = new Role("ROLE_ADMIN");
             Role user_role = new Role("ROLE_USER");
+
             String pass = "ThisPassShouldBeHard";
             UserModel userModel = new UserModel("admin",
                                                 passwordEncoder.encode(pass));
@@ -61,6 +84,8 @@ public class DataInit
             userModel.getRoles().add(admin);
             userModel.getRoles().add(user_role);
             userRepository.save(userModel);
+
+            /* ============= Random user registration =============*/
 
             userModel = new UserModel("user",
                                       passwordEncoder.encode("123456"));

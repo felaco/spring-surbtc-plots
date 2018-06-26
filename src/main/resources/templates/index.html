@@ -32,7 +32,7 @@
                     <div class="modal-body">
                         <label for="indicators">Select a indicator</label>
                         <select name="indicators" id="indicators" class="form-control">
-                            <option th:each="indicator : ${indicators}" th:value="${indicator.indicatorName}"
+                            <option th:each="indicator : ${supportedIndicators}" th:value="${indicator.indicatorName}"
                                     th:text="${indicator.indicatorName}"></option>
                         </select>
                     </div>
@@ -54,15 +54,16 @@
             </tr>
             </thead>
             <tbody>
-            <tr th:each="indicator, iterStats : ${user.indicatorCommandList}">
+            <tr th:each="indicator, iterStats : ${user.userIndicators}">
                 <td th:text="${indicator.indicatorName}"></td>
                 <td>
-                    <a class="btn btn-success" th:id="'ed_' + ${iterStats.index}"
-                            th:href="@{|/indicators/${user.userName}/${iterStats.index}|}">Editar
+                    <a class="btn btn-success" th:id="'ed_' + ${indicator.id}"
+                            th:href="@{|/indicators/${user.username}/${indicator.id}|}">Editar
                     </a>
-                    <button class="btn btn-danger" th:id="'rm_' + ${iterStats.index}">Remover</button>
+                    <button class="btn btn-danger" th:id="'rm_' + ${indicator.id}"
+                    onclick="deleteIndicator(this)">Remover</button>
                 </td>
-                <td th:text="${indicator.paramToString()}"></td>
+                <td th:text="${indicator.stringRepresentation()}"></td>
             </tr>
             </tbody>
         </table>
@@ -85,24 +86,7 @@
 <script async src="https://code.highcharts.com/stock/indicators/stochastic.js"></script>
 <script>
 
-    var currentSelectedModalEdit = -1,
-        currentLoggedUser = null;
-
-    function insertNewIndicatorRowCallback(result) {
-        var td0 = '<td>' + result.indicatorName + '</td>',
-            td1 = '<td>' +
-                '<button class="btn btn-success" id="ed_' + result.lastIndicatorIndex + '">Editar</button>' +
-                '&nbsp' + // a space between the buttons
-                '<button class="btn btn-danger" id="rm_' + result.lastIndicatorIndex + '">Remover</button>' +
-                '</td>',
-            td2 = '<td>' + result.StringParams + '</td>';
-
-
-        $('#indicators_table > tbody:last-child')
-            .append($('<tr>')
-                .append(td0, td1, td2));
-
-    }
+    var currentLoggedUser = null;
 
     $(document).ready(function () {
         $.get("/api/highchart", function (data) {
@@ -114,6 +98,9 @@
         });
     });
 
+    function reload() {
+        location.reload();
+    }
     function onAcceptModalIndicator() {
         $('#modal-indicator').modal('hide');
         indicator = document.getElementById("indicators");
@@ -121,10 +108,25 @@
         $.ajax({
             url: '/api/indicators',
             type: 'POST',
-            data: ({paramName: indicator.value}),
-            success: insertNewIndicatorRowCallback
+            data: ({
+                paramName: indicator.value,
+                username: currentLoggedUser
+            }),
+            success: reload
         });
         indicator.selectedIndex = "0";
+    }
+
+    function deleteIndicator(element){
+        id = element.id.substring(3);
+
+        url = '/api/indicators/' + currentLoggedUser +'/' + id;
+
+        $.ajax({
+            url: url,
+            type: 'DELETE',
+            success: reload
+        });
     }
 
 </script>
